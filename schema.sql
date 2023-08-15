@@ -1,9 +1,9 @@
-DROP DATABASE IF EXISTS books_db;
--- Creates the "books_db" database --
-CREATE DATABASE books_db;
-USE books_db;
+DROP DATABASE IF EXISTS inventory_db;
 
--- Add biography table --
+CREATE DATABASE inventory_db;
+USE inventory_db;
+
+
 CREATE TABLE department (
     id INT PRIMARY KEY,
     name VARCHAR(30)
