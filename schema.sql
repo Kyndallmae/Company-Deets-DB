@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS inventory_db;
+DROP DATABASE IF EXISTS companydeets_db;
 
-CREATE DATABASE inventory_db;
-USE inventory_db;
+CREATE DATABASE companydeets_db;
+USE companydeets_db;
 
 
 CREATE TABLE department (
