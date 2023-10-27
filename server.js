@@ -7,41 +7,41 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const db = mysql.createConnection(
-    {
-      host: 'localhost',
-      user: 'Kyndall',
-      password: 'Archie0702!',
-      database: 'companydeets_db'
-    },
-    console.log(`Connected to the companydeets_db database.`)
-  );
+  {
+    host: 'localhost',
+    user: 'Kyndall',
+    password: 'Archie0702!',
+    database: 'companydeets_db'
+  },
+  console.log(`Connected to the companydeets_db database.`)
+);
 
-  db.connect((err) => {
-    if (err) throw err;
-    console.log("Employee Tracker Error: Not connected");
-    companyMenu();
-  });
+db.connect((err) => {
+  if (err) throw err;
+  console.log("Employee Tracker Error: Not connected");
+  companyMenu();
+});
 
-  function companyMenu() {
-    inquirer
-      .prompt({
-        type: "list",
-        name: "companyMenu",
-        message: "What would you like to do?",
-        choices: [
-          "View departments",
-          "View roles",
-          "View employees",
-          "Add a department",
-          "Add an employee",
-          "Update an employees role",
-          "Quit"
-        ]
-      })
-      .then(({ companyMenu }) => {
-        switch (companyMenu) {
-          case "View departments":
-            viewDepartments();
+function companyMenu() {
+  inquirer
+    .prompt({
+      type: "list",
+      name: "companyMenu",
+      message: "What would you like to do?",
+      choices: [
+        "View departments",
+        "View roles",
+        "View employees",
+        "Add a department",
+        "Add an employee",
+        "Update an employees role",
+        "Quit"
+      ]
+    })
+    .then(({ companyMenu }) => {
+      switch (companyMenu) {
+        case "View departments":
+          viewDepartments();
 
         case "View roles":
           viewRoles();
@@ -175,9 +175,9 @@ function addEmployeeRole(roles) {
         name: "employeeManager",
         message: "Who is this employees manager?",
         choices: [
-         "Michael Scott",
-         "Jim Halpert",
-         "Toby Flenderson",
+          "Michael Scott",
+          "Jim Halpert",
+          "Toby Flenderson",
           "NULL"
         ]
       },
@@ -306,15 +306,15 @@ function updatePrompt(employees, roles) {
     })
 };
 
-  app.get('api/departments')
-  db.query('SELECT * FROM departments', function (err, results) {
-    console.log(results);
-  });
+app.get('api/departments')
+db.query('SELECT * FROM departments', function (err, results) {
+  console.log(results);
+});
 
-  app.use((req, res) => {
-    res.status(404).end();
-  });
-  
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+app.use((req, res) => {
+  res.status(404).end();
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
