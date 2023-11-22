@@ -1,7 +1,8 @@
+// requried dependencies
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 require("console.table");
-// Connects to database
+// database connection
 const db = mysql.createConnection(
   {
     host: 'localhost',
@@ -12,7 +13,7 @@ const db = mysql.createConnection(
 
     database: 'companydeets_db'
   },
-  console.log(`Connected to the  database.`)
+  console.log(`Connected to the database.`)
 );
 
 db.connect((err) => {
@@ -21,7 +22,7 @@ db.connect((err) => {
   mainMenu();
 });
 
-// Prompts menu
+// main inquirer prompt
 function mainMenu() {
 
   inquirer
@@ -72,7 +73,7 @@ function mainMenu() {
     });
 };
 
-// View departments
+// view all departments function
 function viewDepartments() {
   const sql = `
   SELECT department.id AS id, department.name AS department 
@@ -88,7 +89,7 @@ function viewDepartments() {
   })
 };
 
-// View roles
+// view all roles function
 function viewRoles() {
   const sql = `
   SELECT role.title AS role, role.id AS role_id, role.salary AS salary, department.name AS department
@@ -107,7 +108,7 @@ function viewRoles() {
   })
 };
 
-// View employees
+// view all employees function
 function viewEmployee() {
   const sql = `
   SELECT employee.id, employee.first_name, employee.last_name, role.title AS role, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
@@ -127,7 +128,7 @@ function viewEmployee() {
   })
 };
 
-// Add new department name
+// function to add the newly created department to the department table
 function insertDepartment({ departmentName }) {
   const sql = `
 INSERT INTO department (name)
@@ -144,7 +145,7 @@ VALUES (?)
   });
 };
 
-// Add new department
+// function to create a new department
 function addDepartment() {
   inquirer.prompt([
     {
@@ -158,7 +159,7 @@ function addDepartment() {
     })
 };
 
-// Add employee roles
+// function to add an employee, their role, and their manager
 function addEmployeeRole(roles) {
   inquirer
     .prompt([
@@ -214,7 +215,7 @@ function addEmployeeRole(roles) {
     })
 };
 
-// Adds employee to db
+// function to get the roles from the role table and map them into an array
 function addEmployee() {
   const sql = `
   SELECT role.id, role.title
@@ -234,7 +235,7 @@ function addEmployee() {
   })
 }
 
-// Adds updated employees to db
+// function to get the employees from the employee table and map them into an array
 function updateEmployeeRole() {
   const sql = `
   SELECT employee.id, CONCAT(employee.first_name, " ", employee.last_name) AS employee
@@ -255,7 +256,7 @@ function updateEmployeeRole() {
   });
 };
 
-// Adds roles to db
+// function to get the roles from the role table and map them into an array
 function employeeRoles(employees) {
   const sql = `
   SELECT role.id, role.title
@@ -277,7 +278,7 @@ function employeeRoles(employees) {
   });
 };
 
-// Adds updated roles to db
+// function to update a selected employees role
 function updatePrompt(employees, roles) {
   inquirer
     .prompt([
