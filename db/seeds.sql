@@ -1,3 +1,10 @@
+INSERT INTO department (name)
+VALUES  ("Billing"),
+        ("Sales"),
+        ("Reception"),
+        ("Managment"),
+        ("Human Resources");
+
 INSERT INTO departments (id, dep_name)
 VALUES ('12345', 'Billing'),
        ('67890', 'Sales'),

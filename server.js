@@ -1,70 +1,78 @@
-const express = require('express');
-const mysql = require('mysql2');
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
+const mysql = require("mysql2");
+const inquirer = require("inquirer");
+require("console.table");
+// Connects to database
 const db = mysql.createConnection(
   {
     host: 'localhost',
-    user: 'Kyndall',
+
+    user: 'root',
+
     password: 'Archie0702!',
+
     database: 'companydeets_db'
   },
-  console.log(`Connected to the companydeets_db database.`)
+  console.log(`Connected to the  database.`)
 );
 
 db.connect((err) => {
   if (err) throw err;
-  console.log("Employee Tracker Error: Not connected");
-  companyMenu();
+  console.log("Employee Tracker \n-------------------");
+  mainMenu();
 });
 
-function companyMenu() {
+// Prompts menu
+function mainMenu() {
+
   inquirer
     .prompt({
       type: "list",
-      name: "companyMenu",
-      message: "What would you like to do?",
+      name: "mainMenu",
+      message: "Select from the following options.",
       choices: [
-        "View departments",
-        "View roles",
-        "View employees",
+        "View all departments",
+        "View all roles",
+        "View all employees",
         "Add a department",
         "Add an employee",
         "Update an employees role",
         "Quit"
       ]
     })
-    .then(({ companyMenu }) => {
-      switch (companyMenu) {
-        case "View departments":
+    .then(({ mainMenu }) => {
+      switch (mainMenu) {
+        case "View all departments":
           viewDepartments();
+          break;
 
-        case "View roles":
+        case "View all roles":
           viewRoles();
+          break;
 
-        case "View employees":
+        case "View all employees":
           viewEmployee();
+          break;
 
         case "Add a department":
           addDepartment();
+          break;
 
         case "Add an employee":
           addEmployee();
+          break;
 
         case "Update an employees role":
           updateEmployeeRole();
+          break;
 
         case "Quit":
           db.end();
+          break;
       }
     });
 };
 
-// To view the departments
+// View departments
 function viewDepartments() {
   const sql = `
   SELECT department.id AS id, department.name AS department 
@@ -76,11 +84,11 @@ function viewDepartments() {
       return;
     }
     console.table(result);
-    companyMenu();
+    mainMenu();
   })
 };
 
-// To view the roles 
+// View roles
 function viewRoles() {
   const sql = `
   SELECT role.title AS role, role.id AS role_id, role.salary AS salary, department.name AS department
@@ -95,11 +103,11 @@ function viewRoles() {
       return;
     }
     console.table(result);
-    companyMenu();
+    mainMenu();
   })
 };
 
-// To view the employees 
+// View employees
 function viewEmployee() {
   const sql = `
   SELECT employee.id, employee.first_name, employee.last_name, role.title AS role, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
@@ -115,12 +123,12 @@ function viewEmployee() {
       return;
     }
     console.table(result);
-    companyMenu();
+    mainMenu();
   })
 };
 
-// Adds new department to department table
-function addDepartment({ departmentName }) {
+// Add new department name
+function insertDepartment({ departmentName }) {
   const sql = `
 INSERT INTO department (name)
 VALUES (?)
@@ -131,13 +139,13 @@ VALUES (?)
       res.status(400).json({ error: err.message });
       return;
     }
-    console.log("Success! ", departmentName);
-    companyMenu();
+    console.log("Successfully added ", departmentName);
+    mainMenu();
   });
 };
 
-// Creates a new department
-function newDepartment() {
+// Add new department
+function addDepartment() {
   inquirer.prompt([
     {
       type: "input",
@@ -146,28 +154,28 @@ function newDepartment() {
     }
   ])
     .then((answer) => {
-      newDepartment(answer);
+      insertDepartment(answer);
     })
 };
 
-// Adds a new employee, their role, and their manager
+// Add employee roles
 function addEmployeeRole(roles) {
   inquirer
     .prompt([
       {
         type: "input",
-        name: "firstName",
+        name: "employeeFirstName",
         message: "What's the employees first name?"
       },
       {
         type: "input",
-        name: "lastName",
+        name: "employeeLastName",
         message: "What's the employees last name?"
       },
       {
         type: "list",
         name: "employeeRole",
-        message: "What's the employees role?",
+        message: "What's the employees role",
         choices: roles
       },
       {
@@ -175,9 +183,11 @@ function addEmployeeRole(roles) {
         name: "employeeManager",
         message: "Who is this employees manager?",
         choices: [
-          "Michael Scott",
-          "Jim Halpert",
-          "Toby Flenderson",
+          "Beth Davila",
+          "Deacon Cline",
+          "Kayleigh Combs",
+          "Matthew Sanford",
+          "Wanda Roberson",
           "NULL"
         ]
       },
@@ -198,13 +208,13 @@ function addEmployeeRole(roles) {
             return;
           }
           console.table(result);
-          console.log("Success!");
-          companyMenu();
+          console.log("Successfully added employee");
+          mainMenu();
         })
     })
 };
 
-// Takes roles from table and puts them into an array 
+// Adds employee to db
 function addEmployee() {
   const sql = `
   SELECT role.id, role.title
@@ -224,7 +234,7 @@ function addEmployee() {
   })
 }
 
-// Takes employees from table and puts them into an array
+// Adds updated employees to db
 function updateEmployeeRole() {
   const sql = `
   SELECT employee.id, CONCAT(employee.first_name, " ", employee.last_name) AS employee
@@ -245,7 +255,7 @@ function updateEmployeeRole() {
   });
 };
 
-// Takes the roles from the roles table and puts them into an array 
+// Adds roles to db
 function employeeRoles(employees) {
   const sql = `
   SELECT role.id, role.title
@@ -267,20 +277,20 @@ function employeeRoles(employees) {
   });
 };
 
-// Updates employee
+// Adds updated roles to db
 function updatePrompt(employees, roles) {
   inquirer
     .prompt([
       {
         type: "list",
-        name: "currentEmployees",
-        message: "Who would you like to update",
+        name: "employeeOptions",
+        message: "Select an employee to update",
         choices: employees
       },
       {
         type: "list",
         name: "roleOptions",
-        message: "What role do they play?",
+        message: "What role would you like to assign to the employee?",
         choices: roles
       },
     ])
@@ -300,21 +310,8 @@ function updatePrompt(employees, roles) {
           }
           console.table(result);
           console.log("Employees role successfully updated");
-          companyMenu();
+          mainMenu();
         }
       )
     })
-};
-
-app.get('api/departments')
-db.query('SELECT * FROM departments', function (err, results) {
-  console.log(results);
-});
-
-app.use((req, res) => {
-  res.status(404).end();
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+}
