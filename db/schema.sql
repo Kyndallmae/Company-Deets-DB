@@ -1,9 +1,9 @@
 -- Creates new database
-DROP DATABASE IF EXISTS companydeets_db;
-CREATE DATABASE companydeets_db;
+DROP DATABASE IF EXISTS employees_db;
+CREATE DATABASE employees_db;
 
 -- Use new database
-USE companydeets_db;
+USE employees_db;
 
 -- Departments
 CREATE TABLE department (

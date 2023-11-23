@@ -11,7 +11,9 @@ const db = mysql.createConnection(
 
     password: 'Archie0702!',
 
-    database: 'companydeets_db'
+    database: 'employees_db',
+
+    port: 3001
   },
   console.log(`Connected to the database.`)
 );
